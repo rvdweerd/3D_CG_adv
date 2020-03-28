@@ -26,7 +26,8 @@ Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
 	gfx( wnd ),
-    ct(gfx)
+    ct(gfx),
+    star(Star::Make(175, 75, 7))
 {
 }
 
@@ -40,18 +41,84 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+    if (wnd.mouse.LeftIsPressed())
+    {
+        //const Vec2 pointerPos(float(wnd.mouse.GetPosX()), float(wnd.mouse.GetPosY()));
+        star.SetPos(Vec2{ (float)wnd.mouse.GetPosX()-Graphics::ScreenWidth/2, Graphics::ScreenHeight/2-(float)wnd.mouse.GetPosY() });
+  
+    }
+    auto e = wnd.mouse.Read();
+    if (e.GetType() == Mouse::Event::Type::WheelUp) // enlarge
+    {
+        star.Scale(1.05f);
+    }
+    if (e.GetType() == Mouse::Event::Type::WheelDown) // shrink
+    {
+        star.Scale(0.95f);
+    }
+    if (wnd.kbd.KeyIsPressed(0x41))  // A = left
+    {
+        star.Translate({ -1,0 });
+    }
+    if (wnd.kbd.KeyIsPressed(0x44))  // D = right
+    {
+        star.Translate({ 1,0 });
+    }
+    if (wnd.kbd.KeyIsPressed(0x57))  // W = up
+    {
+        star.Translate({ 0,1 });
+    }
+    if (wnd.kbd.KeyIsPressed(0x53))  // S = down
+    {
+        star.Translate({ 0,-1 });
+    }
+    if (wnd.kbd.KeyIsPressed(0x51))  // Q = accelerate
+    {
+        star.Accelerate(1.05f);
+    }
+    if (wnd.kbd.KeyIsPressed(0x5A))  // Z = decelerate
+    {
+        star.Accelerate(0.95f);
+    }
+    //while (!wnd.kbd.KeyIsEmpty())
+    //{
+    //    // get an event from the queue
+    //    const Keyboard::Event e = wnd.kbd.ReadKey();
+    //    // check if it is a release event
+    //    if (e.IsRelease())
+    //    {
+    //        // check if the event was for the space key
+    //        if (e.GetCode() == 0x41) // A = left
+    //        {
+    //            star.Translate({ -10,0 });
+    //        }
+    //        if (e.GetCode() == 0x44) // D = right
+    //        {
+    //            star.Translate({ 10,0 });
+    //        }
+    //        if (e.GetCode() == 0x57) // W = up
+    //        {
+    //            star.Translate({ 0,10 });
+    //        }
+    //        if (e.GetCode() == 0x53) // S = down
+    //        {
+    //            star.Translate({ 0,-10 });
+    //        }
+    //    }
+    //}
+
 }
 
 void Game::ComposeFrame()
 {
     //Vec2 v1{ 100,100 };
     //gfx.DrawLine(v1, Vec2{ (float)wnd.mouse.GetPosX(), (float)wnd.mouse.GetPosY() }, Colors::White);
-    std::vector<Vec2> vertices = Star::Make(175, 75, 7);
-    for (auto& v : vertices)
-    {
-        v += {200, 200};
-    }
-    ct.DrawClosedPolyline(vertices, Colors::Red);
+    //std::vector<Vec2> vertices = Star::Make(175, 75, 7);
+    //for (auto& v : vertices)
+    //{
+    //    v += {200, 200};
+    //}
+    ct.DrawClosedPolyline(star.GetVertices(), Colors::Red);
     //gfx.DrawClosedPolyline(vertices, Colors::Red);
     
 }
