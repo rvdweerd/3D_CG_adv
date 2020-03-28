@@ -20,6 +20,7 @@
  ******************************************************************************************/
 #include "MainWindow.h"
 #include "Game.h"
+#include "Homework.h"
 
 Game::Game( MainWindow& wnd )
 	:
@@ -42,8 +43,6 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
-    Vei2 v1{ 100,100 };
-    
-    gfx.DrawLine(v1, Vei2{wnd.mouse.GetPosX(),wnd.mouse.GetPosY()}, Colors::White);
+    homework::Tutorial1(gfx,wnd);
     
 }

@@ -25,6 +25,8 @@
 #include "ChiliException.h"
 #include "Colors.h"
 #include "Vec2.h"
+#include <vector>
+#include <iterator>
 
 class Graphics
 {
@@ -58,22 +60,40 @@ public:
 		PutPixel( x,y,{ unsigned char( r ),unsigned char( g ),unsigned char( b ) } );
 	}
 	void PutPixel( int x,int y,Color c );
-	void DrawLine(Vei2 v1, Vei2 v2, Color c)
+	void DrawLine(Vec2 v1, Vec2 v2, Color c)
 	{
-		if (v1.x > v2.x) std::swap(v1, v2);
 		float m = 0;
 		if (v1.x != v2.x)
 		{
-			m = float(v2.y - v1.y) / float(v2.x - v1.x);
+			m = (v2.y - v1.y) / (v2.x - v1.x);
 		}
-		if (std::abs(m) <= 1)
+		if (v1.x != v2.x && std::abs(m) <= 1.f)
 		{
-			for (int x = v1.x; x <= v2.x; ++x)
+			if (v1.x > v2.x) std::swap(v1, v2);
+			for (int x = (int)v1.x; x <= (int)v2.x; ++x)
 			{
-				const float y = (float)v1.y + m * (float)(x-v1.x);
+				const float y = v1.y + m * (x-v1.x);
 				PutPixel(x, (int)y, c);
 			}
 		}
+		else
+		{
+			if (v1.y > v2.y) std::swap(v1, v2);
+			float w = (v2.x - v1.x) / (v2.y - v1.y);
+			for (int y = (int)v1.y; y <= (int)v2.y; ++y)
+			{
+				const float x = v1.x + w * (y - v1.y);
+				PutPixel((int)x, y, c);  
+			}
+		}
+	}
+	void DrawClosedPolyline(std::vector<Vec2>& vert, Color c)
+	{
+		for (auto it = vert.begin(); it != std::prev(vert.end()); it++)
+		{
+			DrawLine(*it, *std::next(it), c);
+		}
+		DrawLine(vert.back(), vert.front(), c);
 	}
 	~Graphics();
 private:
