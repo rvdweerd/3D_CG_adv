@@ -25,7 +25,8 @@
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
-	gfx( wnd )
+	gfx( wnd ),
+    ct(gfx)
 {
 }
 
@@ -43,6 +44,14 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
-    homework::Tutorial1(gfx,wnd);
+    //Vec2 v1{ 100,100 };
+    //gfx.DrawLine(v1, Vec2{ (float)wnd.mouse.GetPosX(), (float)wnd.mouse.GetPosY() }, Colors::White);
+    std::vector<Vec2> vertices = Star::Make(175, 75, 7);
+    for (auto& v : vertices)
+    {
+        v += {200, 200};
+    }
+    ct.DrawClosedPolyline(vertices, Colors::Red);
+    //gfx.DrawClosedPolyline(vertices, Colors::Red);
     
 }

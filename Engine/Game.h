@@ -1,4 +1,4 @@
-/****************************************************************************************** 
+    /****************************************************************************************** 
  *	Chili DirectX Framework Version 16.07.20											  *	
  *	Game.h																				  *
  *	Copyright 2016 PlanetChili.net <http://www.planetchili.net>							  *
@@ -23,6 +23,7 @@
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "Graphics.h"
+#include "CoordinateTransformer.h"
 
 class Game
 {
@@ -42,5 +43,6 @@ private:
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
+    CoordinateTransformer ct;
 	/********************************/
 };
