@@ -42,4 +42,8 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
+    Vei2 v1{ 100,100 };
+    
+    gfx.DrawLine(v1, Vei2{wnd.mouse.GetPosX(),wnd.mouse.GetPosY()}, Colors::White);
+    
 }

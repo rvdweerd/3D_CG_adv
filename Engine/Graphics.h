@@ -24,6 +24,7 @@
 #include <wrl.h>
 #include "ChiliException.h"
 #include "Colors.h"
+#include "Vec2.h"
 
 class Graphics
 {
@@ -57,6 +58,23 @@ public:
 		PutPixel( x,y,{ unsigned char( r ),unsigned char( g ),unsigned char( b ) } );
 	}
 	void PutPixel( int x,int y,Color c );
+	void DrawLine(Vei2 v1, Vei2 v2, Color c)
+	{
+		if (v1.x > v2.x) std::swap(v1, v2);
+		float m = 0;
+		if (v1.x != v2.x)
+		{
+			m = float(v2.y - v1.y) / float(v2.x - v1.x);
+		}
+		if (std::abs(m) <= 1)
+		{
+			for (int x = v1.x; x <= v2.x; ++x)
+			{
+				const float y = (float)v1.y + m * (float)(x-v1.x);
+				PutPixel(x, (int)y, c);
+			}
+		}
+	}
 	~Graphics();
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain>				pSwapChain;
