@@ -22,8 +22,8 @@ public:
 	{
 		scale_X *= s_X;
 		scale_Y *= s_Y;
-		translation.x *= scale_X;
-		translation.y *= scale_Y;
+		translation.x *= s_X;
+		translation.y *= s_Y;
 	}
 	void Translate(Vec2 offset)
 	{
