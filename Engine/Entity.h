@@ -11,10 +11,21 @@ public:
 		verts(std::move(vertices)),
 		pos(pos),
 		c(col)
-	{}
+	{
+		float radiusSq = 0;
+		for (const Vec2& v : verts)
+		{
+			radiusSq = std::max(radiusSq, (v).LenSq() );
+		}
+		radius_outer = sqrt(radiusSq);
+	}
+	float GetOuterRadius() const
+	{
+		return radius_outer;
+	}
 	Vec2 GetPos() const
 	{
-		return pos;
+		return { (float)pos.x,(float)pos.y };
 	}
 	void SetPos(Vec2 pos)
 	{
@@ -51,9 +62,10 @@ public:
 	}
 
 private:
-	Vec2 pos{ 0,0 };
+	Vec2 pos{ 0.f,0.f };
 	float scaler = 1.f;
 	std::vector<Vec2> verts;
 	Color c;
 	float speed = 2.f;
+	float radius_outer;
 };

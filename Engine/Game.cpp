@@ -22,6 +22,7 @@
 #include "Game.h"
 #include "Homework.h"
 #include "Drawable.h"
+#include <random>
 
 Game::Game( MainWindow& wnd )
 	:
@@ -30,11 +31,51 @@ Game::Game( MainWindow& wnd )
     ct(gfx),
     cam(ct)
 {
-    stars.emplace_back(Entity(Star::Make(100, 50, 7), { 0,0 }));
+    std::random_device rd;
+    std::mt19937 rng(rd());
+    std::uniform_int_distribution<int> xPosDistr(-2000, 2000);
+    std::uniform_int_distribution<int> yPosDistr(-1000, 1000);
+    std::uniform_int_distribution<int> R_outerDistr(5, 100);
+    std::uniform_real_distribution<float> ratio(0.1f, 1.f);
+    std::uniform_int_distribution<int> nFlangesDistr(3, 20);
+    std::uniform_int_distribution<int> cR(0, 255);
+    std::uniform_int_distribution<int> cG(0, 255);
+    std::uniform_int_distribution<int> cB(0, 255);
+    for (int i = 0; i < 500; i++)
+    {
+        std::vector<Vec2> newStar;
+        Vec2 pos = { 0.f,0.f };
+        Color c;
+        while (true)
+        {
+            int x = xPosDistr(rng);
+            int y = yPosDistr(rng);
+            pos = { (float)x,(float)y };
+            int R = R_outerDistr(rng);
+            int r = (int)( R * ratio(rng));
+            int n = nFlangesDistr(rng);
+            c = Colors::MakeRGB((unsigned char)cR(rng), (unsigned char)cG(rng), (unsigned char)cB(rng));
+            if (r > R) std::swap(r, R);
+            newStar = Star::Make((float)R, (float)r, n);
+            bool compliant = true;
+            for (const Entity& e : stars)
+            {
+                if ( (e.GetPos() - pos).Len() < (e.GetOuterRadius() + R + 10))
+                {
+                    compliant = false;
+                    break;
+                }
+            }
+            if (compliant) break;
+        }
+        stars.emplace_back(Entity(newStar, pos,c));
+    }
+
+    /*stars.emplace_back(Entity(Star::Make(100, 50, 7), { 0,0 }));
     stars.emplace_back(Entity(Star::Make(50, 15, 5), { 100,100 }));
     stars.emplace_back(Entity(Star::Make(25, 5, 3), { -100,100 }));
     stars.emplace_back(Entity(Star::Make(70, 15, 20), { -100,-100 }));
-    stars.emplace_back(Entity(Star::Make(60, 45, 9), { 100,-100 }));
+    stars.emplace_back(Entity(Star::Make(60, 45, 9), { 100,-100 }));*/
 }
 
 void Game::Go()
@@ -85,11 +126,13 @@ void Game::UpdateModel()
     }
     if (wnd.kbd.KeyIsPressed(0x51))  // Q = accelerate
     {
-        stars[0].Accelerate(1.05f);
+        //stars[0].Accelerate(1.05f);
+        cam.Scale(1.05f);
     }
     if (wnd.kbd.KeyIsPressed(0x5A))  // Z = decelerate
     {
-        stars[0].Accelerate(0.95f);
+        //stars[0].Accelerate(0.95f);
+        cam.Scale(0.95f);
     }
 
     if (wnd.kbd.KeyIsPressed(0x4A))  // J = cam left
@@ -151,6 +194,7 @@ void Game::ComposeFrame()
     {
         //cam.DrawClosedPolyline(e.GetPolyLine(), Colors::Red);
         cam.Draw(e.GetDrawable());
+
     }
     //gfx.DrawClosedPolyline(vertices, Colors::Red);
     
