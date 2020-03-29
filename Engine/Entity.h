@@ -1,15 +1,16 @@
 #pragma once
 #include <vector>
 #include "Vec2.h"
-
+#include "Drawable.h"
 
 class Entity
 {
 public:
-	Entity(std::vector<Vec2> vertices, Vec2 pos)
+	Entity(std::vector<Vec2> vertices, Vec2 pos, Color col = Colors::Red)
 		:
 		verts(std::move(vertices)),
-		pos(pos)
+		pos(pos),
+		c(col)
 	{}
 	Vec2 GetPos() const
 	{
@@ -41,10 +42,18 @@ public:
 		}
 		return std::move(mod);
 	}
+	Drawable GetDrawable() const
+	{
+		Drawable d(verts, c);
+		d.Scale(scaler);
+		d.Translate(pos);
+		return std::move(d);
+	}
 
 private:
 	Vec2 pos{ 0,0 };
 	float scaler = 1.f;
 	std::vector<Vec2> verts;
+	Color c;
 	float speed = 2.f;
 };

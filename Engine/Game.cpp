@@ -21,6 +21,7 @@
 #include "MainWindow.h"
 #include "Game.h"
 #include "Homework.h"
+#include "Drawable.h"
 
 Game::Game( MainWindow& wnd )
 	:
@@ -146,9 +147,10 @@ void Game::ComposeFrame()
     //{
     //    v += {200, 200};
     //}
-    for (const auto& e : stars)
+    for (const Entity& e : stars)
     {
-        cam.DrawClosedPolyline(e.GetPolyLine(), Colors::Red);
+        //cam.DrawClosedPolyline(e.GetPolyLine(), Colors::Red);
+        cam.Draw(e.GetDrawable());
     }
     //gfx.DrawClosedPolyline(vertices, Colors::Red);
     
