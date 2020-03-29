@@ -21,7 +21,7 @@ public:
 	//	}
 	//	gfx.DrawClosedPolyline(vert, c);
 	//}
-	void Draw(Drawable& drawable)
+	void Draw(Drawable& drawable) const
 	{
 		drawable.ScaleIndependent(1.f, -1.f);
 		drawable.Translate(offset);

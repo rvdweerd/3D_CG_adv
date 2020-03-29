@@ -37,7 +37,7 @@ public:
 			v.y *= scale_Y;
 			v += translation;
 		}
-		gfx.DrawClosedPolyline(std::move(model), c);
+		gfx.DrawClosedPolyline(model, c);
 	}
 
 private:

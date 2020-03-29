@@ -32,22 +32,22 @@ public:
 	{
 		speed *= q;
 	}
-	std::vector<Vec2> GetPolyLine() const
-	{
-		std::vector<Vec2> mod = verts;
-		for (auto& v : mod)
-		{
-			v *= scaler;
-			v += pos;
-		}
-		return std::move(mod);
-	}
+	//std::vector<Vec2> GetPolyLine() const
+	//{
+	//	std::vector<Vec2> mod = verts;
+	//	for (auto& v : mod)
+	//	{
+	//		v *= scaler;
+	//		v += pos;
+	//	}
+	//	return std::move(mod);
+	//}
 	Drawable GetDrawable() const
 	{
 		Drawable d(verts, c);
 		d.Scale(scaler);
 		d.Translate(pos);
-		return std::move(d);
+		return d;
 	}
 
 private:

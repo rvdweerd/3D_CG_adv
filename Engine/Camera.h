@@ -30,11 +30,11 @@ public:
 	//	}
 	//	ct.DrawClosedPolyline(std::move(verts),c);
 	//}
-	void Draw(Drawable& drawable)
+	void Draw(Drawable& drawable) const
 	{
 		drawable.Translate(-pos);
 		drawable.Scale(scale);
-		ct.Draw(std::move(drawable));
+		ct.Draw( drawable );
 	}
 	void Scale(float scaler)
 	{
