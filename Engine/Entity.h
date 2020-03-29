@@ -6,9 +6,10 @@
 class Entity
 {
 public:
-	Entity(std::vector<Vec2> vertices)
+	Entity(std::vector<Vec2> vertices, Vec2 pos)
 		:
-		verts(std::move(vertices))
+		verts(std::move(vertices)),
+		pos(pos)
 	{}
 	Vec2 GetPos() const
 	{
@@ -30,7 +31,7 @@ public:
 	{
 		speed *= q;
 	}
-	std::vector<Vec2> GetVertices() const
+	std::vector<Vec2> GetPolyLine() const
 	{
 		std::vector<Vec2> mod = verts;
 		for (auto& v : mod)

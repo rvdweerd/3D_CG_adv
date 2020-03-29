@@ -27,8 +27,13 @@ Game::Game( MainWindow& wnd )
 	wnd( wnd ),
 	gfx( wnd ),
     ct(gfx),
-    star(Star::Make(175, 75, 7))
+    cam(ct)
 {
+    stars.emplace_back(Entity(Star::Make(100, 50, 7), { 0,0 }));
+    stars.emplace_back(Entity(Star::Make(50, 15, 5), { 100,100 }));
+    stars.emplace_back(Entity(Star::Make(25, 5, 3), { -100,100 }));
+    stars.emplace_back(Entity(Star::Make(70, 15, 20), { -100,-100 }));
+    stars.emplace_back(Entity(Star::Make(60, 45, 9), { 100,-100 }));
 }
 
 void Game::Go()
@@ -41,45 +46,68 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-    if (wnd.mouse.LeftIsPressed())
+    while (!wnd.mouse.IsEmpty())
     {
-        //const Vec2 pointerPos(float(wnd.mouse.GetPosX()), float(wnd.mouse.GetPosY()));
-        star.SetPos(Vec2{ (float)wnd.mouse.GetPosX()-Graphics::ScreenWidth/2, Graphics::ScreenHeight/2-(float)wnd.mouse.GetPosY() });
-  
-    }
-    auto e = wnd.mouse.Read();
-    if (e.GetType() == Mouse::Event::Type::WheelUp) // enlarge
-    {
-        star.Scale(1.05f);
-    }
-    if (e.GetType() == Mouse::Event::Type::WheelDown) // shrink
-    {
-        star.Scale(0.95f);
+        if (wnd.mouse.LeftIsPressed())
+        {
+            //const Vec2 pointerPos(float(wnd.mouse.GetPosX()), float(wnd.mouse.GetPosY()));
+            stars[0].SetPos(Vec2{ (float)wnd.mouse.GetPosX() - Graphics::ScreenWidth / 2, Graphics::ScreenHeight / 2 - (float)wnd.mouse.GetPosY() });
+
+        }
+        auto e = wnd.mouse.Read();
+        if (e.GetType() == Mouse::Event::Type::WheelUp) // enlarge
+        {
+            //stars[0].Scale(1.05f);
+            cam.Scale(1.05f);
+        }
+        if (e.GetType() == Mouse::Event::Type::WheelDown) // shrink
+        {
+            //stars[0].Scale(0.95f);
+            cam.Scale(0.95f);
+        }
     }
     if (wnd.kbd.KeyIsPressed(0x41))  // A = left
     {
-        star.Translate({ -1,0 });
+        stars[0].Translate({ -1,0 });
     }
     if (wnd.kbd.KeyIsPressed(0x44))  // D = right
     {
-        star.Translate({ 1,0 });
+        stars[0].Translate({ 1,0 });
     }
     if (wnd.kbd.KeyIsPressed(0x57))  // W = up
     {
-        star.Translate({ 0,1 });
+        stars[0].Translate({ 0,1 });
     }
     if (wnd.kbd.KeyIsPressed(0x53))  // S = down
     {
-        star.Translate({ 0,-1 });
+        stars[0].Translate({ 0,-1 });
     }
     if (wnd.kbd.KeyIsPressed(0x51))  // Q = accelerate
     {
-        star.Accelerate(1.05f);
+        stars[0].Accelerate(1.05f);
     }
     if (wnd.kbd.KeyIsPressed(0x5A))  // Z = decelerate
     {
-        star.Accelerate(0.95f);
+        stars[0].Accelerate(0.95f);
     }
+
+    if (wnd.kbd.KeyIsPressed(0x4A))  // J = cam left
+    {
+        cam.MoveBy({ -1,0 });
+    }
+    if (wnd.kbd.KeyIsPressed(0x4C))  // L = cam right
+    {
+        cam.MoveBy({ 1,0 });
+    }
+    if (wnd.kbd.KeyIsPressed(0x49))  // I = cam pan up
+    {
+        cam.MoveBy({ 0,1 });
+    }
+    if (wnd.kbd.KeyIsPressed(0x4B))  // K = cam pan down
+    {
+        cam.MoveBy({ 0,-1 });
+    }
+
     //while (!wnd.kbd.KeyIsEmpty())
     //{
     //    // get an event from the queue
@@ -118,7 +146,10 @@ void Game::ComposeFrame()
     //{
     //    v += {200, 200};
     //}
-    ct.DrawClosedPolyline(star.GetVertices(), Colors::Red);
+    for (const auto& e : stars)
+    {
+        cam.DrawClosedPolyline(e.GetPolyLine(), Colors::Red);
+    }
     //gfx.DrawClosedPolyline(vertices, Colors::Red);
     
 }
