@@ -23,6 +23,7 @@
 #include "Homework.h"
 #include "Drawable.h"
 #include <random>
+#include "FrameTimer.h"
 
 Game::Game( MainWindow& wnd )
 	:
@@ -41,6 +42,9 @@ Game::Game( MainWindow& wnd )
     std::uniform_int_distribution<int> cR(0, 255);
     std::uniform_int_distribution<int> cG(0, 255);
     std::uniform_int_distribution<int> cB(0, 255);
+    std::uniform_real_distribution<float> period(0.5f, 2.f);
+    std::uniform_real_distribution<float> amp(1.0f, 1.5f);
+
     for (int i = 0; i < 500; i++)
     {
         std::vector<Vec2> newStar;
@@ -68,7 +72,7 @@ Game::Game( MainWindow& wnd )
             }
             if (compliant) break;
         }
-        stars.emplace_back(Entity(newStar, pos,c));
+        stars.emplace_back(Entity(newStar, pos,c, period(rng),amp(rng)));
     }
 
     /*stars.emplace_back(Entity(Star::Make(100, 50, 7), { 0,0 }));
@@ -85,18 +89,26 @@ void Game::Go()
 	ComposeFrame();
 	gfx.EndFrame();
 }
-
+Vec2 LastMousePos = { 0,0 };
+Vec2 LastCamPos = { 0, 0 };
 void Game::UpdateModel()
 {
     while (!wnd.mouse.IsEmpty())
     {
+        auto e = wnd.mouse.Read();
+        if (e.GetType() == Mouse::Event::Type::LPress)
+        {
+            LastMousePos = { -(float)e.GetPosX(),(float)e.GetPosY() };
+            LastCamPos = cam.GetPos();
+        }
         if (wnd.mouse.LeftIsPressed())
         {
             //const Vec2 pointerPos(float(wnd.mouse.GetPosX()), float(wnd.mouse.GetPosY()));
-            stars[0].SetPos(Vec2{ (float)wnd.mouse.GetPosX() - Graphics::ScreenWidth / 2, Graphics::ScreenHeight / 2 - (float)wnd.mouse.GetPosY() });
+            //stars[0].SetPos(Vec2{ (float)wnd.mouse.GetPosX() - Graphics::ScreenWidth / 2, Graphics::ScreenHeight / 2 - (float)wnd.mouse.GetPosY() });
+            Vec2 screenMovement = (Vec2{ -(float)wnd.mouse.GetPosX(),(float)wnd.mouse.GetPosY() } -LastMousePos);
 
+            cam.MoveTo(LastCamPos + screenMovement / cam.GetScale());
         }
-        auto e = wnd.mouse.Read();
         if (e.GetType() == Mouse::Event::Type::WheelUp) // enlarge
         {
             //stars[0].Scale(1.05f);
@@ -179,6 +191,8 @@ void Game::UpdateModel()
     //    }
     //}
 
+    
+    
 }
 
 void Game::ComposeFrame()
@@ -190,10 +204,11 @@ void Game::ComposeFrame()
     //{
     //    v += {200, 200};
     //}
-    for (const Entity& e : stars)
+    float dt = ft.Mark();
+    for (Entity& e : stars)
     {
         //cam.DrawClosedPolyline(e.GetPolyLine(), Colors::Red);
-        cam.Draw(e.GetDrawable());
+        cam.Draw(e.GetDrawable(dt));
 
     }
     //gfx.DrawClosedPolyline(vertices, Colors::Red);

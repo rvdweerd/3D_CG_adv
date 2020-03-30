@@ -40,6 +40,14 @@ public:
 	{
 		scale *= scaler;
 	}
+	float GetScale() const
+	{
+		return scale;
+	}
+	float GetSpeed() const
+	{
+		return camSpeed;
+	}
 private:
 	CoordinateTransformer& ct;
 	Vec2 pos = { 0,0 };

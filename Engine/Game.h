@@ -26,6 +26,7 @@
 #include "CoordinateTransformer.h"
 #include "Entity.h"
 #include "Camera.h"
+#include "FrameTimer.h"
 
 class Game
 {
@@ -45,6 +46,7 @@ private:
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
+    FrameTimer ft;
     CoordinateTransformer ct;
     std::vector<Entity> stars;
     Camera cam;

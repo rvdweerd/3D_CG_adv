@@ -93,6 +93,10 @@ public:
 			}
 		}
 	}
+	static bool OnScreen(const Vec2& p) 
+	{
+		return (p.x > 0 && p.x < Graphics::ScreenWidth&& p.y>0 && p.y < Graphics::ScreenHeight);
+	}
 	void DrawClosedPolyline(std::vector<Vec2>& vert, Color c)
 	{
 		for (auto it = vert.begin(); it != std::prev(vert.end()); it++)

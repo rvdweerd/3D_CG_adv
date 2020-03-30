@@ -31,13 +31,21 @@ public:
 	}
 	void Render(Graphics& gfx)
 	{
+		bool render = false;
 		for (Vec2& v : model)
 		{
 			v.x *= scale_X;
 			v.y *= scale_Y;
 			v += translation;
+			if (!render&& Graphics::OnScreen(v))
+			{
+				render = true;
+			}
 		}
-		gfx.DrawClosedPolyline(model, c);
+		if (render)
+		{
+			gfx.DrawClosedPolyline(model, c);
+		}
 	}
 
 private:

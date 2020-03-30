@@ -145,6 +145,7 @@
     <ClInclude Include="Drawable.h" />
     <ClInclude Include="DXErr.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="FrameTimer.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Homework.h" />
