@@ -27,6 +27,8 @@
 #include "Entity.h"
 #include "Camera.h"
 #include "FrameTimer.h"
+#include <random>
+#include "StarBro.h"
 
 class Game
 {
@@ -46,9 +48,29 @@ private:
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
+
+    // World Gen parameters
+    static constexpr float worldWidth = 10000.f;
+    static constexpr float worldHeight = 6000.f;
+    static constexpr int nStars = 500;
+    static constexpr float meanStarRadius = 160.f;
+    static constexpr float devStarRadius = 90.f;
+    static constexpr float minStarRadius = 40.f;
+    static constexpr float maxStarRadius = 300.f;
+    static constexpr float meanInnerRatio = 0.4f;
+    static constexpr float devInnerRatio = 0.25f;
+    static constexpr float minInnerRatio = 0.15f;
+    static constexpr float maxInnerRatio = 0.8f;
+    static constexpr float meanFlares = 6.5f;
+    static constexpr float devFlares = 2.0f;
+    static constexpr int minFlares = 3;
+    static constexpr int maxFlares = 10;
+
+    // Game objects
     FrameTimer ft;
     CoordinateTransformer ct;
-    std::vector<Entity> stars;
+   //std::vector<Entity> stars;
     Camera cam;
+    std::vector<StarBro> stars;
 	/********************************/
 };

@@ -48,6 +48,7 @@ public:
 	{
 		return camSpeed;
 	}
+
 private:
 	CoordinateTransformer& ct;
 	Vec2 pos = { 0,0 };

@@ -24,6 +24,7 @@
 #include "Drawable.h"
 #include <random>
 #include "FrameTimer.h"
+#include <algorithm>
 
 Game::Game( MainWindow& wnd )
 	:
@@ -34,52 +35,30 @@ Game::Game( MainWindow& wnd )
 {
     std::random_device rd;
     std::mt19937 rng(rd());
-    std::uniform_int_distribution<int> xPosDistr(-2000, 2000);
-    std::uniform_int_distribution<int> yPosDistr(-1000, 1000);
-    std::uniform_int_distribution<int> R_outerDistr(5, 100);
-    std::uniform_real_distribution<float> ratio(0.1f, 1.f);
-    std::uniform_int_distribution<int> nFlangesDistr(3, 20);
-    std::uniform_int_distribution<int> cR(0, 255);
-    std::uniform_int_distribution<int> cG(0, 255);
-    std::uniform_int_distribution<int> cB(0, 255);
+    std::uniform_real_distribution<float> xDist(-worldWidth/2, worldWidth/2);
+    std::uniform_real_distribution<float> yDist( - worldHeight / 2, worldHeight / 2);
+    std::normal_distribution<float> radDist(meanStarRadius,devStarRadius);
+    std::normal_distribution<float> ratDist(meanInnerRatio, devInnerRatio);
+    std::normal_distribution<float> flareDist( meanFlares, devFlares);
+    const Color colors[] = { Colors::Red,Colors::White,Colors::Blue,Colors::Cyan,Colors::Magenta,Colors::Yellow,Colors::Gray,Colors::Green };
+    std::uniform_int_distribution<size_t> colorSampler(0, std::end(colors)-std::begin(colors));
     std::uniform_real_distribution<float> period(0.5f, 2.f);
     std::uniform_real_distribution<float> amp(1.0f, 1.5f);
 
-    for (int i = 0; i < 500; i++)
+    while (stars.size() < nStars)
     {
-        std::vector<Vec2> newStar;
-        Vec2 pos = { 0.f,0.f };
-        Color c;
-        while (true)
+        Vec2 pos = { xDist(rng),yDist(rng) };
+        const auto rad = std::clamp(radDist(rng), minStarRadius, maxStarRadius);
+        if (std::any_of(stars.begin(), stars.end(), [&](StarBro& sb) { return (pos - sb.GetPos()).LenSq() < pow((rad + sb.GetRadius()), 2); }))
         {
-            int x = xPosDistr(rng);
-            int y = yPosDistr(rng);
-            pos = { (float)x,(float)y };
-            int R = R_outerDistr(rng);
-            int r = (int)( R * ratio(rng));
-            int n = nFlangesDistr(rng);
-            c = Colors::MakeRGB((unsigned char)cR(rng), (unsigned char)cG(rng), (unsigned char)cB(rng));
-            if (r > R) std::swap(r, R);
-            newStar = Star::Make((float)R, (float)r, n);
-            bool compliant = true;
-            for (const Entity& e : stars)
-            {
-                if ( (e.GetPos() - pos).Len() < (e.GetOuterRadius() + R + 10))
-                {
-                    compliant = false;
-                    break;
-                }
-            }
-            if (compliant) break;
+            continue;
         }
-        stars.emplace_back(Entity(newStar, pos,c, period(rng),amp(rng)));
+        const float& innerRat = std::clamp(ratDist(rng), minInnerRatio, maxInnerRatio);
+        const int nF = std::clamp((int)flareDist(rng), minFlares, maxFlares);
+        const int& nFlares = std::clamp((int)flareDist(rng),minFlares,maxFlares);
+        Color c = colors[colorSampler(rng)];
+        stars.emplace_back(pos, rad, innerRat, nFlares, c,period(rng),amp(rng));
     }
-
-    /*stars.emplace_back(Entity(Star::Make(100, 50, 7), { 0,0 }));
-    stars.emplace_back(Entity(Star::Make(50, 15, 5), { 100,100 }));
-    stars.emplace_back(Entity(Star::Make(25, 5, 3), { -100,100 }));
-    stars.emplace_back(Entity(Star::Make(70, 15, 20), { -100,-100 }));
-    stars.emplace_back(Entity(Star::Make(60, 45, 9), { 100,-100 }));*/
 }
 
 void Game::Go()

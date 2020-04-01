@@ -6,9 +6,9 @@
 class Drawable
 {
 public:
-	Drawable(std::vector<Vec2> model, Color c)
+	Drawable(const std::vector<Vec2>& model, Color c)
 		:
-		model(std::move(model)),
+		model(&model),
 		c(c)
 	{
 	}
@@ -29,27 +29,13 @@ public:
 	{
 		translation += offset;
 	}
-	void Render(Graphics& gfx)
+	void Render(Graphics& gfx) const
 	{
-		bool render = false;
-		for (Vec2& v : model)
-		{
-			v.x *= scale_X;
-			v.y *= scale_Y;
-			v += translation;
-			if (!render&& Graphics::OnScreen(v))
-			{
-				render = true;
-			}
-		}
-		if (render)
-		{
-			gfx.DrawClosedPolyline(model, c);
-		}
+		gfx.DrawClosedPolyline(*model, translation, scale_X, scale_Y,c);
 	}
 
 private:
-	std::vector<Vec2> model;
+	const std::vector<Vec2>* model;
 	Color c;
 	Vec2 translation = { 0.f,0.f };
 	float scale_X = 1.f;
