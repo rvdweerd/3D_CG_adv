@@ -17,27 +17,37 @@ public:
             const auto e = mouse.Read();
             if (e.GetType() == Mouse::Event::Type::LPress)
             {
-                LastMousePos = { -(float)e.GetPosX(),(float)e.GetPosY() };
-                LastCamPos = cam.GetPos();
+                lastMousePos = (Vec2)e.GetPos();
+                engaged = true;
+                //LastCamPos = cam.GetPos();
             }
-            if (mouse.LeftIsPressed())
+            if (e.GetType() == Mouse::Event::Type::LRelease)
             {
-                Vec2 screenMovement = (Vec2{ -(float)mouse.GetPosX(),(float)mouse.GetPosY() } -LastMousePos);
-                cam.MoveTo(LastCamPos + screenMovement / cam.GetScale());
+                engaged = false;
             }
             if (e.GetType() == Mouse::Event::Type::WheelUp) // enlarge
             {
-                cam.Scale(1.05f);
+                cam.Scale(zoomFactor);
             }
             if (e.GetType() == Mouse::Event::Type::WheelDown) // shrink
             {
-                cam.Scale(0.95f);
+                cam.Scale(1/zoomFactor);
+            }
+            if (engaged)
+            {
+                const Vec2 curMousePos = (Vec2)e.GetPos();
+                Vec2 delta = curMousePos - lastMousePos;
+                delta.x = -delta.x;
+                cam.MoveBy(delta/cam.GetScale()/cam.GetSpeed());
+                lastMousePos = curMousePos;
             }
         }
 	}
 private:
+    static constexpr float zoomFactor = 1.05f;
+    bool engaged = false;
 	Mouse& mouse;
 	Camera& cam;
-	Vec2 LastMousePos = { 0,0 };
-	Vec2 LastCamPos = { 0,0 };
+	Vec2 lastMousePos = { 0,0 };
+	//Vec2 lastCamPos = { 0,0 };
 };

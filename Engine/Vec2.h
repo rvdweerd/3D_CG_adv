@@ -35,6 +35,12 @@ public:
 		:
 		_Vec2(vect.x, vect.y)
 	{}
+	//_Vec2(std::pair<T, T> pair)
+	//	:
+	//	x(pair.first),
+	//	y(pair.second)
+	//{
+	//}
 	template <typename T2>
 	explicit operator _Vec2<T2>() const
 	{

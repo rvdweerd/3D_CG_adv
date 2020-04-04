@@ -30,6 +30,7 @@
 #include <random>
 #include "StarBro.h"
 #include "MouseCameraController.h"
+#include "Plank.h"
 
 class Game
 {
@@ -53,7 +54,7 @@ private:
     // World Gen parameters
     static constexpr float worldWidth = 10000.f;
     static constexpr float worldHeight = 6000.f;
-    static constexpr int nStars = 500;
+    static constexpr int nStars = 0;
     static constexpr float meanStarRadius = 160.f;
     static constexpr float devStarRadius = 90.f;
     static constexpr float minStarRadius = 40.f;
@@ -74,5 +75,6 @@ private:
     Camera cam;
     MouseCameraController mouseCamCtrlr;
     std::vector<StarBro> stars;
-	/********************************/
+    Plank plank;
+    /********************************/
 };

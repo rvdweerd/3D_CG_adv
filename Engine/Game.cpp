@@ -75,30 +75,36 @@ void Game::UpdateModel()
     mouseCamCtrlr.Update();
     if (wnd.kbd.KeyIsPressed(0x41))  // A = left
     {
-        stars[0].Translate({ -1,0 });
+        //stars[0].Translate({ -1,0 });
+        //cam.MoveBy({ -1 * stars[0].GetSpeed() ,0 }); ///  cam.GetScale()/cam.GetSpeed()
+        plank.Translate({ -1,0 });
     }
     if (wnd.kbd.KeyIsPressed(0x44))  // D = right
     {
-        stars[0].Translate({ 1,0 });
+        //stars[0].Translate({ 1,0 });
+        //cam.MoveTo(stars[0].GetPos());
+        plank.Translate({ 1,0 });
     }
     if (wnd.kbd.KeyIsPressed(0x57))  // W = up
     {
-        stars[0].Translate({ 0,1 });
+        //stars[0].Translate({ 0,1 });
+        //cam.MoveTo(stars[0].GetPos());
+        plank.Translate({ 0,1 });
     }
     if (wnd.kbd.KeyIsPressed(0x53))  // S = down
     {
-        stars[0].Translate({ 0,-1 });
+        //stars[0].Translate({ 0,-1 });
+        //cam.MoveTo(stars[0].GetPos());
+        plank.Translate({ 0,-1 });
     }
-    if (wnd.kbd.KeyIsPressed(0x51))  // Q = accelerate
-    {
-        //stars[0].Accelerate(1.05f);
-        cam.Scale(1.05f);
-    }
-    if (wnd.kbd.KeyIsPressed(0x5A))  // Z = decelerate
-    {
-        //stars[0].Accelerate(0.95f);
-        cam.Scale(0.95f);
-    }
+    //if (wnd.kbd.KeyIsPressed(0x51))  // Q = accelerate
+    //{
+    //    stars[0].Accelerate(1.05f);
+    //}
+    //if (wnd.kbd.KeyIsPressed(0x5A))  // Z = decelerate
+    //{
+    //    stars[0].Accelerate(0.95f);
+    //}
 
     if (wnd.kbd.KeyIsPressed(0x4A))  // J = cam left
     {
@@ -164,6 +170,7 @@ void Game::ComposeFrame()
         cam.Draw(e.GetDrawable(dt));
 
     }
+    cam.Draw(plank.GetDrawable(dt));
     //gfx.DrawClosedPolyline(vertices, Colors::Red);
     
 }

@@ -60,6 +60,10 @@ public:
 	{
 		return { (float)pos.x,(float)pos.y };
 	}
+	float GetSpeed() const
+	{
+		return speed;
+	}
 	void SetPos(Vec2 pos)
 	{
 		this->pos = pos;
@@ -86,7 +90,7 @@ public:
 	//	}
 	//	return std::move(mod);
 	//}
-	Drawable GetDrawable(float dt) 
+	virtual Drawable GetDrawable(float dt) 
 	{
 		Drawable d(verts, c);
 		d.Scale( pulser.GetScale(dt) * scaler );
@@ -99,6 +103,6 @@ private:
 	float scaler = 1.f;
 	std::vector<Vec2> verts;
 	Color c;
-	float speed = 2.f;
+	float speed = 10.f;
 	float radius_outer;
 };

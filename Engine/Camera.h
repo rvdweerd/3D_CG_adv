@@ -52,6 +52,6 @@ public:
 private:
 	CoordinateTransformer& ct;
 	Vec2 pos = { 0,0 };
-	float camSpeed = 13.f;
-	float scale = 0.15f;
+	float camSpeed = 1.f;
+	float scale = 1.f;
 };
