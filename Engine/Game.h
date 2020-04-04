@@ -29,6 +29,7 @@
 #include "FrameTimer.h"
 #include <random>
 #include "StarBro.h"
+#include "MouseCameraController.h"
 
 class Game
 {
@@ -71,6 +72,7 @@ private:
     CoordinateTransformer ct;
    //std::vector<Entity> stars;
     Camera cam;
+    MouseCameraController mouseCamCtrlr;
     std::vector<StarBro> stars;
 	/********************************/
 };

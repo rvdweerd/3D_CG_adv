@@ -31,7 +31,8 @@ Game::Game( MainWindow& wnd )
 	wnd( wnd ),
 	gfx( wnd ),
     ct(gfx),
-    cam(ct)
+    cam(ct),
+    mouseCamCtrlr(wnd.mouse,cam)
 {
     std::random_device rd;
     std::mt19937 rng(rd());
@@ -68,37 +69,10 @@ void Game::Go()
 	ComposeFrame();
 	gfx.EndFrame();
 }
-Vec2 LastMousePos = { 0,0 };
-Vec2 LastCamPos = { 0, 0 };
+
 void Game::UpdateModel()
 {
-    while (!wnd.mouse.IsEmpty())
-    {
-        auto e = wnd.mouse.Read();
-        if (e.GetType() == Mouse::Event::Type::LPress)
-        {
-            LastMousePos = { -(float)e.GetPosX(),(float)e.GetPosY() };
-            LastCamPos = cam.GetPos();
-        }
-        if (wnd.mouse.LeftIsPressed())
-        {
-            //const Vec2 pointerPos(float(wnd.mouse.GetPosX()), float(wnd.mouse.GetPosY()));
-            //stars[0].SetPos(Vec2{ (float)wnd.mouse.GetPosX() - Graphics::ScreenWidth / 2, Graphics::ScreenHeight / 2 - (float)wnd.mouse.GetPosY() });
-            Vec2 screenMovement = (Vec2{ -(float)wnd.mouse.GetPosX(),(float)wnd.mouse.GetPosY() } -LastMousePos);
-
-            cam.MoveTo(LastCamPos + screenMovement / cam.GetScale());
-        }
-        if (e.GetType() == Mouse::Event::Type::WheelUp) // enlarge
-        {
-            //stars[0].Scale(1.05f);
-            cam.Scale(1.05f);
-        }
-        if (e.GetType() == Mouse::Event::Type::WheelDown) // shrink
-        {
-            //stars[0].Scale(0.95f);
-            cam.Scale(0.95f);
-        }
-    }
+    mouseCamCtrlr.Update();
     if (wnd.kbd.KeyIsPressed(0x41))  // A = left
     {
         stars[0].Translate({ -1,0 });
