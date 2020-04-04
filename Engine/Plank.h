@@ -16,7 +16,7 @@ public:
 		fatness(fatness)
 	{
 	}
-	virtual Drawable GetDrawable(float dt) //override
+	virtual Drawable GetDrawable() //override
 	{
 		std::vector<Vec2> model;
 		model.reserve(4);
@@ -25,7 +25,7 @@ public:
 		model.push_back(freePtModel + Vec2{ 0.0f,fatness });
 		model.emplace_back( 0.0f,fatness );
 		SetModel(std::move(model));
-		return Entity::GetDrawable(dt);
+		return Entity::GetDrawable();
 	}
 	/*virtual void Translate(Vec2 vec)
 	{

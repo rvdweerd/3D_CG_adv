@@ -31,13 +31,14 @@ Game::Game( MainWindow& wnd )
 	wnd( wnd ),
 	gfx( wnd ),
     ct(gfx),
+    rng(std::random_device()()),
+    velDistr(0.f,50.f),
     cam(ct),
     mouseCamCtrlr(wnd.mouse,cam),
-    plank( Vec2{ 100.0f,200.0f } , -380.0f , -200.0f , 200.0f),
-    ball(10.f, { -50,-50 },{-5,5},Colors::Red)
+    plank( Vec2{ 100.0f,200.0f } , -380.0f , -200.0f , 200.0f)
 {
-    std::random_device rd;
-    std::mt19937 rng(rd());
+    //std::random_device rd;
+    //std::mt19937 rng(rd());
     std::uniform_real_distribution<float> xDist(-worldWidth/2, worldWidth/2);
     std::uniform_real_distribution<float> yDist( - worldHeight / 2, worldHeight / 2);
     std::normal_distribution<float> radDist(meanStarRadius,devStarRadius);
@@ -63,6 +64,9 @@ Game::Game( MainWindow& wnd )
         stars.emplace_back(pos, rad, innerRat, nFlares, c,period(rng),amp(rng));
     }
     stars.emplace_back(Vec2{ 0.0f,0.0f }, 5.0f, 2.0f, 5, Colors::Red,1.0f,1.05f,true);
+    stars.emplace_back(Vec2{ 0.0f,0.0f }, 250.0f, 1.0f, 15, Colors::Red);
+
+    balls.emplace_back(Ball(10.f, { -50,-50 }, { -50,50 }, Colors::Red));
 }
 
 void Game::Go()
@@ -152,7 +156,55 @@ void Game::UpdateModel()
     //    }
     //}
 
+    float dt = ft.Mark();
+    time_elapsed += dt;
+    if (time_elapsed > 2.5f)
+    {
+        balls.emplace_back(Ball(10.f, { -50,-50 }, { -velDistr(rng),velDistr(rng) }, Colors::Red));
+        time_elapsed = 0.0f;
+    }
     
+    auto it = std::remove_if(balls.begin(), balls.end(), [&](Ball& b) { 
+        float ballDist = b.GetPos().Len();
+        float Range = stars[1].GetRadius();
+        return (b.GetPos().LenSq() > std::pow(stars[1].GetRadius(),2) ); 
+        } );
+    balls.erase(it, balls.end());
+
+    for (auto& b : balls)
+    {
+        Vec2 ballPos_M = b.GetPos() - plank.GetPos();
+        Vec2 barrier = plank.GetPlankSurfaceVector();
+        Vec2 p = barrier * barrier.Dot(ballPos_M) / barrier.Dot(barrier);
+        Vec2 e = ballPos_M - p;
+        if (e.Len() < b.GetRadius())
+        {
+            Vec2 ballVel_M = b.GetVelocityVector();
+            Vec2 q = barrier * barrier.Dot(ballVel_M) / barrier.Dot(barrier);
+            Vec2 f = ballVel_M - q;
+            Vec2 newVel_M = q - f;
+            b.SetVel(newVel_M);
+        }
+    }
+
+    /*it = std::remove_if(balls.begin(), balls.end(), [&](Ball& b) {
+        Vec2 ballPos_M = b.GetPos() - plank.GetPos();
+        Vec2 barrier = plank.GetPlankSurfaceVector();
+        Vec2 p = barrier * barrier.Dot(ballPos_M) / barrier.Dot(barrier);
+        Vec2 e = ballPos_M - p;
+        return (e.Len() < b.GetRadius());
+        });
+    balls.erase(it, balls.end());*/
+
+
+    for (auto& b : balls)
+    {
+        b.Update(dt);
+    }
+    for (auto& s : stars)
+    {
+        s.Update(dt);
+    }
 }
 
 void Game::ComposeFrame()
@@ -164,16 +216,17 @@ void Game::ComposeFrame()
     //{
     //    v += {200, 200};
     //}
-    float dt = ft.Mark();
-    ball.Update(dt);
 
     for (Entity& e : stars)
     {
         //cam.DrawClosedPolyline(e.GetPolyLine(), Colors::Red);
-        cam.Draw(e.GetDrawable(dt));
+        cam.Draw(e.GetDrawable());
     }
-    cam.Draw(plank.GetDrawable(dt));
+    cam.Draw(plank.GetDrawable());
     //gfx.DrawClosedPolyline(vertices, Colors::Red);
-    cam.Draw(ball.GetDrawable(dt));
+    for (auto& b : balls)
+    {
+        cam.Draw(b.GetDrawable());
+    }
     
 }

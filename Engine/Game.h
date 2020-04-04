@@ -72,11 +72,14 @@ private:
     // Game objects
     FrameTimer ft;
     CoordinateTransformer ct;
+    std::mt19937 rng;
+    std::uniform_real_distribution<float> velDistr;
    //std::vector<Entity> stars;
     Camera cam;
     MouseCameraController mouseCamCtrlr;
     std::vector<StarBro> stars;
     Plank plank;
-    Ball ball;
+    std::vector<Ball> balls;
+    float time_elapsed = 0.f;
     /********************************/
 };

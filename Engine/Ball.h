@@ -26,6 +26,11 @@ public:
 	{
 		vel = vel_in;
 	}
+	Vec2 GetVelocityVector() const
+	{
+		return vel;
+	}
+	
 private:
 	float Radius;
 	Vec2 vel;

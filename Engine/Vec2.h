@@ -87,6 +87,10 @@ public:
 		y += rhs.y;
 		return *this;
 	}
+	T Dot(const _Vec2& v2)
+	{
+		return  x * v2.x + y * v2.y;
+	}
 	_Vec2& operator-=(const _Vec2& rhs)
 	{
 		x -= rhs.x;
