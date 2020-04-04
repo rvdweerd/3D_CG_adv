@@ -64,11 +64,15 @@ public:
 	{
 		return speed;
 	}
+	void SetModel(std::vector<Vec2> model)
+	{
+		verts = model;
+	}
 	void SetPos(Vec2 pos)
 	{
 		this->pos = pos;
 	}
-	void Translate(Vec2 vec)
+	virtual void Translate(Vec2 vec)
 	{
 		this->pos += vec*speed;
 	}

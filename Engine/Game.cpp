@@ -32,7 +32,8 @@ Game::Game( MainWindow& wnd )
 	gfx( wnd ),
     ct(gfx),
     cam(ct),
-    mouseCamCtrlr(wnd.mouse,cam)
+    mouseCamCtrlr(wnd.mouse,cam),
+    plank( Vec2{ 100.0f,200.0f } , -380.0f , -200.0f , 200.0f)
 {
     std::random_device rd;
     std::mt19937 rng(rd());
@@ -60,6 +61,7 @@ Game::Game( MainWindow& wnd )
         Color c = colors[colorSampler(rng)];
         stars.emplace_back(pos, rad, innerRat, nFlares, c,period(rng),amp(rng));
     }
+    stars.emplace_back(Vec2{ 0.0f,0.0f }, 5.0f, 2.0f, 5, Colors::Red,1.0f,1.0f);
 }
 
 void Game::Go()
@@ -73,29 +75,29 @@ void Game::Go()
 void Game::UpdateModel()
 {
     mouseCamCtrlr.Update();
-    if (wnd.kbd.KeyIsPressed(0x41))  // A = left
-    {
-        //stars[0].Translate({ -1,0 });
-        //cam.MoveBy({ -1 * stars[0].GetSpeed() ,0 }); ///  cam.GetScale()/cam.GetSpeed()
-        plank.Translate({ -1,0 });
-    }
-    if (wnd.kbd.KeyIsPressed(0x44))  // D = right
-    {
-        //stars[0].Translate({ 1,0 });
-        //cam.MoveTo(stars[0].GetPos());
-        plank.Translate({ 1,0 });
-    }
+    //if (wnd.kbd.KeyIsPressed(0x41))  // A = left
+    //{
+    //    //stars[0].Translate({ -1,0 });
+    //    //cam.MoveBy({ -1 * stars[0].GetSpeed() ,0 }); ///  cam.GetScale()/cam.GetSpeed()
+    //    plank.Translate({ -1,0 });
+    //}
+    //if (wnd.kbd.KeyIsPressed(0x44))  // D = right
+    //{
+    //    //stars[0].Translate({ 1,0 });
+    //    //cam.MoveTo(stars[0].GetPos());
+    //    plank.Translate({ 1,0 });
+    //}
     if (wnd.kbd.KeyIsPressed(0x57))  // W = up
     {
         //stars[0].Translate({ 0,1 });
         //cam.MoveTo(stars[0].GetPos());
-        plank.Translate({ 0,1 });
+        plank.MoveFreeY(2.0f);
     }
     if (wnd.kbd.KeyIsPressed(0x53))  // S = down
     {
         //stars[0].Translate({ 0,-1 });
         //cam.MoveTo(stars[0].GetPos());
-        plank.Translate({ 0,-1 });
+        plank.MoveFreeY(-2.0f);
     }
     //if (wnd.kbd.KeyIsPressed(0x51))  // Q = accelerate
     //{
@@ -105,22 +107,21 @@ void Game::UpdateModel()
     //{
     //    stars[0].Accelerate(0.95f);
     //}
-
-    if (wnd.kbd.KeyIsPressed(0x4A))  // J = cam left
+    if (wnd.kbd.KeyIsPressed(0x4A))  // J = left
     {
-        cam.MoveBy({ -1,0 });
+        plank.Translate({ -1, 0 });
     }
-    if (wnd.kbd.KeyIsPressed(0x4C))  // L = cam right
+    if (wnd.kbd.KeyIsPressed(0x4C))  // L = right
     {
-        cam.MoveBy({ 1,0 });
+        plank.Translate({ 1, 0 });
     }
-    if (wnd.kbd.KeyIsPressed(0x49))  // I = cam pan up
+    if (wnd.kbd.KeyIsPressed(0x49))  // I = up
     {
-        cam.MoveBy({ 0,1 });
+        plank.Translate({ 0, 1 });
     }
-    if (wnd.kbd.KeyIsPressed(0x4B))  // K = cam pan down
+    if (wnd.kbd.KeyIsPressed(0x4B))  // K = down
     {
-        cam.MoveBy({ 0,-1 });
+        plank.Translate({ 0, -1 });
     }
 
     //while (!wnd.kbd.KeyIsEmpty())
@@ -168,7 +169,6 @@ void Game::ComposeFrame()
     {
         //cam.DrawClosedPolyline(e.GetPolyLine(), Colors::Red);
         cam.Draw(e.GetDrawable(dt));
-
     }
     cam.Draw(plank.GetDrawable(dt));
     //gfx.DrawClosedPolyline(vertices, Colors::Red);

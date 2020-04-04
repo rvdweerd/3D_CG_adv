@@ -7,19 +7,50 @@
 class Plank : public Entity
 {
 public:
-	Plank()
+	Plank( Vec2 Anchor, float freeX, float minFreeY, float maxFreeY, float fatness = 8.f , Color c = Colors::Yellow)
 		:
-		Entity({}, { 0,0 }, Colors::Red, 1.f, 1.f)
+		Entity({}, Anchor,c),
+		minFreeYModel(minFreeY - Anchor.y),
+		maxFreeYModel(maxFreeY - Anchor.y),
+		freePtModel(freeX- Anchor.x , minFreeYModel),
+		fatness(fatness)
 	{
 	}
 	virtual Drawable GetDrawable(float dt) //override
 	{
-		plank = { this->GetPos(), this->GetPos() + Vec2{0,h}, fixture + Vec2{0,h}, fixture };
-		Drawable d(plank, Colors::Red);
-		return d;
+		std::vector<Vec2> model;
+		model.reserve(4);
+		model.emplace_back(0.0f, 0.0f);
+		model.push_back(freePtModel);
+		model.push_back(freePtModel + Vec2{ 0.0f,fatness });
+		model.emplace_back( 0.0f,fatness );
+		SetModel(std::move(model));
+		return Entity::GetDrawable(dt);
+	}
+	/*virtual void Translate(Vec2 vec)
+	{
+		freePtModel += vec*10.0f;
+		freePtModel.y = std::clamp(freePtModel.y, minFreeYModel, maxFreeYModel);
+	}*/
+	Vec2 GetFreePt() const
+	{
+		return freePtModel + GetPos();
+	}
+	void SetFreeY(float FreeY_in)
+	{
+		freePtModel.y = std::clamp( FreeY_in - GetPos().y, minFreeYModel, maxFreeYModel);
+	}
+	void MoveFreeY(float deltaY)
+	{
+		SetFreeY(GetFreePt().y + deltaY);
+	}
+	Vec2 GetPlankSurfaceVector() const
+	{
+		return -freePtModel;
 	}
 private:
-	Vec2 fixture = { 200,0 };
-	std::vector<Vec2> plank = {};
-	static constexpr float h = 20;
+	float minFreeYModel;
+	float maxFreeYModel;
+	Vec2 freePtModel;
+	float fatness;
 };
