@@ -72,9 +72,9 @@ public:
 	{
 		this->pos = pos;
 	}
-	virtual void Translate(Vec2 vec)
+	virtual void TranslateBy(Vec2 vec)
 	{
-		this->pos += vec*speed;
+		this->pos += vec;
 	}
 	void Scale(float k)
 	{
@@ -94,6 +94,7 @@ public:
 	//	}
 	//	return std::move(mod);
 	//}
+
 	virtual Drawable GetDrawable(float dt) 
 	{
 		Drawable d(verts, c);
@@ -107,6 +108,6 @@ private:
 	float scaler = 1.f;
 	std::vector<Vec2> verts;
 	Color c;
-	float speed = 10.f;
+	float speed = 1.0f;
 	float radius_outer;
 };

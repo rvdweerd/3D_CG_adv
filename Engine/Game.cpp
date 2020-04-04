@@ -33,7 +33,8 @@ Game::Game( MainWindow& wnd )
     ct(gfx),
     cam(ct),
     mouseCamCtrlr(wnd.mouse,cam),
-    plank( Vec2{ 100.0f,200.0f } , -380.0f , -200.0f , 200.0f)
+    plank( Vec2{ 100.0f,200.0f } , -380.0f , -200.0f , 200.0f),
+    ball(10.f, { -50,-50 },{-5,5},Colors::Red)
 {
     std::random_device rd;
     std::mt19937 rng(rd());
@@ -61,7 +62,7 @@ Game::Game( MainWindow& wnd )
         Color c = colors[colorSampler(rng)];
         stars.emplace_back(pos, rad, innerRat, nFlares, c,period(rng),amp(rng));
     }
-    stars.emplace_back(Vec2{ 0.0f,0.0f }, 5.0f, 2.0f, 5, Colors::Red,1.0f,1.0f);
+    stars.emplace_back(Vec2{ 0.0f,0.0f }, 5.0f, 2.0f, 5, Colors::Red,1.0f,1.05f,true);
 }
 
 void Game::Go()
@@ -109,19 +110,19 @@ void Game::UpdateModel()
     //}
     if (wnd.kbd.KeyIsPressed(0x4A))  // J = left
     {
-        plank.Translate({ -1, 0 });
+        plank.TranslateBy({ -1, 0 });
     }
     if (wnd.kbd.KeyIsPressed(0x4C))  // L = right
     {
-        plank.Translate({ 1, 0 });
+        plank.TranslateBy({ 1, 0 });
     }
     if (wnd.kbd.KeyIsPressed(0x49))  // I = up
     {
-        plank.Translate({ 0, 1 });
+        plank.TranslateBy({ 0, 1 });
     }
     if (wnd.kbd.KeyIsPressed(0x4B))  // K = down
     {
-        plank.Translate({ 0, -1 });
+        plank.TranslateBy({ 0, -1 });
     }
 
     //while (!wnd.kbd.KeyIsEmpty())
@@ -152,7 +153,6 @@ void Game::UpdateModel()
     //}
 
     
-    
 }
 
 void Game::ComposeFrame()
@@ -165,6 +165,8 @@ void Game::ComposeFrame()
     //    v += {200, 200};
     //}
     float dt = ft.Mark();
+    ball.Update(dt);
+
     for (Entity& e : stars)
     {
         //cam.DrawClosedPolyline(e.GetPolyLine(), Colors::Red);
@@ -172,5 +174,6 @@ void Game::ComposeFrame()
     }
     cam.Draw(plank.GetDrawable(dt));
     //gfx.DrawClosedPolyline(vertices, Colors::Red);
+    cam.Draw(ball.GetDrawable(dt));
     
 }

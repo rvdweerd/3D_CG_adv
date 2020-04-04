@@ -31,6 +31,7 @@
 #include "StarBro.h"
 #include "MouseCameraController.h"
 #include "Plank.h"
+#include "Ball.h"
 
 class Game
 {
@@ -76,5 +77,6 @@ private:
     MouseCameraController mouseCamCtrlr;
     std::vector<StarBro> stars;
     Plank plank;
+    Ball ball;
     /********************************/
 };
