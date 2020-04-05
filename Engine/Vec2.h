@@ -67,10 +67,10 @@ public:
 		norm.Normalize();
 		return norm;
 	}
-	T		operator*(const _Vec2& rhs) const
-	{
-		return x * rhs.x + y * rhs.y;
-	}
+	//T		operator*(const _Vec2& rhs) const
+	//{
+	//	return x * rhs.x + y * rhs.y;
+	//}
 	_Vec2	operator-() const
 	{
 		return _Vec2(-x, -y);
@@ -86,10 +86,6 @@ public:
 		x += rhs.x;
 		y += rhs.y;
 		return *this;
-	}
-	T Dot(const _Vec2& v2)
-	{
-		return  x * v2.x + y * v2.y;
 	}
 	_Vec2& operator-=(const _Vec2& rhs)
 	{
@@ -114,6 +110,14 @@ public:
 	_Vec2	operator*(const T& rhs) const
 	{
 		return _Vec2(*this) *= rhs;
+	}
+	T Dot(const _Vec2& v2)
+	{
+		return  x * v2.x + y * v2.y;
+	}
+	T operator*(const _Vec2& rhs) const
+	{
+		return (this->x * rhs.x + this->y * rhs.y);
 	}
 	_Vec2& operator/=(const T& rhs)
 	{

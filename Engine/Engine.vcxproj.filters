@@ -93,6 +93,9 @@
     <ClInclude Include="Ball.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ChiliMath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DXErr.cpp">
@@ -140,5 +143,16 @@
     <Image Include="Chili.ico">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Sounds\arkpad.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="Sounds\fart1.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="Sounds\arkbrick.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
   </ItemGroup>
 </Project>

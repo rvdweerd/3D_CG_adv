@@ -32,6 +32,7 @@
 #include "MouseCameraController.h"
 #include "Plank.h"
 #include "Ball.h"
+#include "Sound.h"
 
 class Game
 {
@@ -49,6 +50,7 @@ private:
 private:
 	MainWindow& wnd;
 	Graphics gfx;
+    Sound collideSound = Sound(L"Sounds\\arkpad.wav");
 	/********************************/
 	/*  User Variables              */
 

@@ -48,6 +48,11 @@ public:
 	{
 		return -freePtModel;
 	}
+	auto GetPoints() const
+	{
+		const Vec2 pos = GetPos();
+		return std::make_pair(pos, pos + freePtModel); // pos = anchor point of plank entity, pos+freeptmodel = free point position in world space
+	}
 private:
 	float minFreeYModel;
 	float maxFreeYModel;

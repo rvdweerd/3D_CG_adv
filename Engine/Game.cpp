@@ -25,6 +25,7 @@
 #include <random>
 #include "FrameTimer.h"
 #include <algorithm>
+#include "ChiliMath.h"
 
 Game::Game( MainWindow& wnd )
 	:
@@ -32,7 +33,7 @@ Game::Game( MainWindow& wnd )
 	gfx( wnd ),
     ct(gfx),
     rng(std::random_device()()),
-    velDistr(0.f,50.f),
+    velDistr(0.f,500.f),
     cam(ct),
     mouseCamCtrlr(wnd.mouse,cam),
     plank( Vec2{ 100.0f,200.0f } , -380.0f , -200.0f , 200.0f)
@@ -158,7 +159,7 @@ void Game::UpdateModel()
 
     float dt = ft.Mark();
     time_elapsed += dt;
-    if (time_elapsed > 2.5f)
+    if (time_elapsed > 0.5f)
     {
         balls.emplace_back(Ball(10.f, { -50,-50 }, { -velDistr(rng),velDistr(rng) }, Colors::Red));
         time_elapsed = 0.0f;
@@ -171,36 +172,40 @@ void Game::UpdateModel()
         } );
     balls.erase(it, balls.end());
 
+    const auto plankPts = plank.GetPoints();
     for (auto& b : balls)
     {
-        Vec2 ballPos_M = b.GetPos() - plank.GetPos();
-        Vec2 barrier = plank.GetPlankSurfaceVector();
-        Vec2 p = barrier * barrier.Dot(ballPos_M) / barrier.Dot(barrier);
-        Vec2 e = ballPos_M - p;
-        if (e.Len() < b.GetRadius())
+        float dist = DistancePointLine(plankPts.first, plankPts.second, b.GetPos());
+        if (dist < b.GetRadius())
         {
-            Vec2 ballVel_M = b.GetVelocityVector();
-            Vec2 q = barrier * barrier.Dot(ballVel_M) / barrier.Dot(barrier);
-            Vec2 f = ballVel_M - q;
-            Vec2 newVel_M = q - f;
-            b.SetVel(newVel_M);
+            collideSound.Play();
+            const Vec2 w = plank.GetPlankSurfaceVector().GetNormalized();
+            const Vec2 v = b.GetVelocityVector();
+            Vec2 newvel = w * (v * w) * 2.0f - v;
+            b.SetVel(newvel);
         }
-    }
-
-    /*it = std::remove_if(balls.begin(), balls.end(), [&](Ball& b) {
-        Vec2 ballPos_M = b.GetPos() - plank.GetPos();
-        Vec2 barrier = plank.GetPlankSurfaceVector();
-        Vec2 p = barrier * barrier.Dot(ballPos_M) / barrier.Dot(barrier);
-        Vec2 e = ballPos_M - p;
-        return (e.Len() < b.GetRadius());
-        });
-    balls.erase(it, balls.end());*/
-
-
-    for (auto& b : balls)
-    {
         b.Update(dt);
     }
+
+    //for (auto& b : balls)
+    //{
+    //    Vec2 ballPos_M = b.GetPos() - plank.GetPos();
+    //    Vec2 barrier = plank.GetPlankSurfaceVector();
+    //    Vec2 p = barrier * ( barrier.Dot(ballPos_M) / (barrier*barrier) );
+    //    Vec2 e = ballPos_M - p;
+    //    //TEST//
+    //    float dist = e.Len();
+    //    //TEST//
+    //    if (e.Len() < b.GetRadius())
+    //    {
+    //        Vec2 ballVel_M = b.GetVelocityVector();
+    //        Vec2 q = barrier * barrier.Dot(ballVel_M) / barrier.Dot(barrier);
+    //        Vec2 f = ballVel_M - q;
+    //        Vec2 newVel_M = q - f;
+    //        b.SetVel(newVel_M);
+    //    }
+    //}
+
     for (auto& s : stars)
     {
         s.Update(dt);
