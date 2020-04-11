@@ -40,6 +40,10 @@ public:
 	{
 		this->pos = pos;
 	}
+	void SetRotationAngle(float phi_in)
+	{
+		phi = phi_in;
+	}
 	virtual void TranslateBy(Vec2 vec)
 	{
 		this->pos += vec;
@@ -69,11 +73,13 @@ public:
 	virtual Drawable GetDrawable() 
 	{
 		Drawable d(verts, c);
+		d.Rotate(phi);
 		d.Scale( GetScale() );
 		d.Translate(pos);
 		return d;
 	}
 private:
+	float phi = 0;
 	Vec2 pos{ 0.f,0.f };
 	float scaler = 1.f;
 	float scale_orig = 1.f;

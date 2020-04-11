@@ -16,7 +16,7 @@ public:
 		fatness(fatness)
 	{
 	}
-	virtual Drawable GetDrawable() //override
+	virtual Drawable GetDrawable() override
 	{
 		std::vector<Vec2> model;
 		model.reserve(4);

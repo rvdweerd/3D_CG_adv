@@ -64,7 +64,7 @@ Game::Game( MainWindow& wnd )
         Color c = colors[colorSampler(rng)];
         stars.emplace_back(pos, rad, innerRat, nFlares, c,period(rng),amp(rng));
     }
-    stars.emplace_back(Vec2{ 0.0f,0.0f }, 5.0f, 2.0f, 5, Colors::Red,1.0f,1.05f,true);
+    stars.emplace_back(Vec2{ 0.0f,0.0f }, 5.0f, 2.0f, 5, Colors::Red, 3.141f/4, 1.0f,1.05f,true);
     stars.emplace_back(Vec2{ 0.0f,0.0f }, 250.0f, 1.0f, 15, Colors::Red);
 
     balls.emplace_back(Ball(10.f, { -50,-50 }, { -50,50 }, Colors::Red));
