@@ -19,7 +19,7 @@
  *	along with The Chili DirectX Framework.  If not, see <http://www.gnu.org/licenses/>.  *
  ******************************************************************************************/
 #pragma once
-
+#include <sstream>
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "Graphics.h"
@@ -83,5 +83,6 @@ private:
     Plank plank;
     std::vector<Ball> balls;
     float time_elapsed = 0.f;
+    bool Freeze = false;
     /********************************/
 };

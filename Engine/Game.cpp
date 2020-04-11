@@ -93,6 +93,13 @@ void Game::UpdateModel()
     //    //cam.MoveTo(stars[0].GetPos());
     //    plank.Translate({ 1,0 });
     //}
+    Freeze = false;
+    if (wnd.kbd.KeyIsPressed(VK_SPACE))  // space = freeze
+    {
+        //stars[0].Translate({ 0,1 });
+        //cam.MoveTo(stars[0].GetPos());
+        Freeze = true;
+    }
     if (wnd.kbd.KeyIsPressed(0x57))  // W = up
     {
         //stars[0].Translate({ 0,1 });
@@ -161,7 +168,7 @@ void Game::UpdateModel()
     time_elapsed += dt;
     if (time_elapsed > 0.5f)
     {
-        balls.emplace_back(Ball(10.f, { -50,-50 }, { -velDistr(rng),velDistr(rng) }, Colors::Red));
+        if (!Freeze) balls.emplace_back(Ball(10.f, { -50,-50 }, { -velDistr(rng),velDistr(rng) }, Colors::Red));
         time_elapsed = 0.0f;
     }
     
@@ -173,38 +180,46 @@ void Game::UpdateModel()
     balls.erase(it, balls.end());
 
     const auto plankPts = plank.GetPoints();
-    for (auto& b : balls)
-    {
-        float dist = DistancePointLine(plankPts.first, plankPts.second, b.GetPos());
-        if (dist < b.GetRadius())
-        {
-            collideSound.Play();
-            const Vec2 w = plank.GetPlankSurfaceVector().GetNormalized();
-            const Vec2 v = b.GetVelocityVector();
-            Vec2 newvel = w * (v * w) * 2.0f - v;
-            b.SetVel(newvel);
-        }
-        b.Update(dt);
-    }
-
     //for (auto& b : balls)
     //{
-    //    Vec2 ballPos_M = b.GetPos() - plank.GetPos();
-    //    Vec2 barrier = plank.GetPlankSurfaceVector();
-    //    Vec2 p = barrier * ( barrier.Dot(ballPos_M) / (barrier*barrier) );
-    //    Vec2 e = ballPos_M - p;
-    //    //TEST//
-    //    float dist = e.Len();
-    //    //TEST//
-    //    if (e.Len() < b.GetRadius())
+    //    float dist = DistancePointLine(plankPts.first, plankPts.second, b.GetPos());
+    //    if (dist < b.GetRadius())
     //    {
-    //        Vec2 ballVel_M = b.GetVelocityVector();
-    //        Vec2 q = barrier * barrier.Dot(ballVel_M) / barrier.Dot(barrier);
-    //        Vec2 f = ballVel_M - q;
-    //        Vec2 newVel_M = q - f;
-    //        b.SetVel(newVel_M);
+    //        collideSound.Play();
+    //        const Vec2 w = plank.GetPlankSurfaceVector().GetNormalized();
+    //        const Vec2 v = b.GetVelocityVector();
+    //        Vec2 newvel = w * (v * w) * 2.0f - v;
+    //        b.SetVel(newvel);
     //    }
+    //    b.Update(dt);
     //}
+
+    Vec2 barrier = plank.GetPlankSurfaceVector();
+    Vec2 barrier_N = { barrier.y, -barrier.x };
+    for (auto& b : balls)
+    {
+        //Work in plank model coordinates
+        Vec2 ballPos_M = b.GetPos() - plank.GetPos();
+        Vec2 p = barrier * ( barrier.Dot(ballPos_M) / (barrier*barrier) );
+        Vec2 e = ballPos_M - p;
+        //TEST//
+        //float dist = e.Len();
+
+        Vec2 ballVel_M = b.GetVelocityVector();
+        float dot_collision = barrier_N.Dot(ballVel_M);
+        if (e.LenSq() < b.GetRadius()*b.GetRadius() && dot_collision < 0)
+        {
+            //std::stringstream ss;
+            //ss << "Distance from plank: "<<dist<<", dotprod: "<<dot_collision<<'\n';
+            //OutputDebugStringA( ss.str().c_str() );
+            
+            Vec2 q = barrier * barrier.Dot(ballVel_M) / barrier.Dot(barrier);
+            Vec2 f = ballVel_M - q;
+            Vec2 newVel_M = q - f;
+            b.SetVel(newVel_M);
+        }
+        if(!Freeze) b.Update(dt);
+    }
 
     for (auto& s : stars)
     {
