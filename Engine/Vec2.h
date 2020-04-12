@@ -35,6 +35,12 @@ public:
 		:
 		_Vec2(vect.x, vect.y)
 	{}
+	//_Vec2(std::pair<T, T> pair)
+	//	:
+	//	x(pair.first),
+	//	y(pair.second)
+	//{
+	//}
 	template <typename T2>
 	explicit operator _Vec2<T2>() const
 	{
@@ -61,9 +67,18 @@ public:
 		norm.Normalize();
 		return norm;
 	}
-	T		operator*(const _Vec2& rhs) const
+	_Vec2& Rotate(T angle)
 	{
-		return x * rhs.x + y * rhs.y;
+		const T cos_ = cos(angle);
+		const T sin_ = sin(angle);
+		const T x_new = cos_ * x - sin_ * y;
+		y = sin_ * x + cos_ * y;
+		x = x_new;
+		return *this;
+	}
+	_Vec2 GetRotated(T angle) const
+	{
+		return _Vec2(*this).Rotate(angle);
 	}
 	_Vec2	operator-() const
 	{
@@ -104,6 +119,14 @@ public:
 	_Vec2	operator*(const T& rhs) const
 	{
 		return _Vec2(*this) *= rhs;
+	}
+	T Dot(const _Vec2& v2)
+	{
+		return  x * v2.x + y * v2.y;
+	}
+	T operator*(const _Vec2& rhs) const
+	{
+		return (this->x * rhs.x + this->y * rhs.y);
 	}
 	_Vec2& operator/=(const T& rhs)
 	{
