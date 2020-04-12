@@ -74,6 +74,15 @@ void Game::Go()
 void Game::UpdateModel()
 {
     mouseCamCtrlr.Update();
+    if (wnd.kbd.KeyIsPressed(0x51))  // Q = rotate cam anti clockwise
+    {
+        cam.SetAngle(cam.GetAngle()+0.01f);
+    }
+    if (wnd.kbd.KeyIsPressed(0x45))  // E = rotate cam clockwise
+    {
+        cam.SetAngle(cam.GetAngle() - 0.01f);
+    }
+
     if (wnd.kbd.KeyIsPressed(0x41))  // A = left
     {
         stars[0].Translate({ -1,0 });
@@ -90,17 +99,6 @@ void Game::UpdateModel()
     {
         stars[0].Translate({ 0,-1 });
     }
-    if (wnd.kbd.KeyIsPressed(0x51))  // Q = accelerate
-    {
-        //stars[0].Accelerate(1.05f);
-        cam.Scale(1.05f);
-    }
-    if (wnd.kbd.KeyIsPressed(0x5A))  // Z = decelerate
-    {
-        //stars[0].Accelerate(0.95f);
-        cam.Scale(0.95f);
-    }
-
     if (wnd.kbd.KeyIsPressed(0x4A))  // J = cam left
     {
         cam.MoveBy({ -1,0 });

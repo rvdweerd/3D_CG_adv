@@ -23,7 +23,9 @@ public:
             if (mouse.LeftIsPressed())
             {
                 Vec2 screenMovement = (Vec2{ -(float)mouse.GetPosX(),(float)mouse.GetPosY() } -LastMousePos);
-                cam.MoveTo(LastCamPos + screenMovement / cam.GetScale());
+                //cam.MoveTo(LastCamPos + screenMovement / cam.GetScale());
+                cam.MoveBy(screenMovement.Rotate(-cam.GetAngle()) / cam.GetScale());
+                LastMousePos = { -(float)e.GetPosX(),(float)e.GetPosY() };
             }
             if (e.GetType() == Mouse::Event::Type::WheelUp) // enlarge
             {

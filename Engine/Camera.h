@@ -19,7 +19,7 @@ public:
 	}
 	void MoveBy(Vec2 offset)
 	{
-		pos += offset * camSpeed;
+		pos += offset;// *camSpeed;
 	}
 	//void DrawClosedPolyline(std::vector<Vec2> verts, Color c)
 	//{
@@ -32,8 +32,11 @@ public:
 	//}
 	void Draw(Drawable& drawable) const
 	{
+
 		drawable.Translate(-pos);
+		
 		drawable.Scale(scale);
+		drawable.Rotate(angle);
 		ct.Draw( drawable );
 	}
 	void Scale(float scaler)
@@ -48,10 +51,18 @@ public:
 	{
 		return camSpeed;
 	}
-
+	float GetAngle() const
+	{
+		return angle;
+	}
+	void SetAngle(float angle_in)
+	{
+		angle = angle_in;
+	}
 private:
 	CoordinateTransformer& ct;
 	Vec2 pos = { 0,0 };
 	float camSpeed = 13.f;
+	float angle = 0.f;
 	float scale = 0.15f;
 };
