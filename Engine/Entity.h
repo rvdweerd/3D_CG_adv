@@ -64,6 +64,14 @@ public:
 	{
 		this->pos = pos;
 	}
+	void SetAngle(float angle_in)
+	{
+		angle = angle_in;
+	}
+	float GetAngle() const
+	{
+		return angle;
+	}
 	void Translate(Vec2 vec)
 	{
 		this->pos += vec*speed;
@@ -90,9 +98,11 @@ public:
 	{
 		Drawable d(verts, c);
 		d.Scale( pulser.GetScale(dt) * scaler );
+		d.Rotate(angle);
 		d.Translate(pos);
 		return d;
 	}
+	virtual void Update(float dt) = 0;
 private:
 	Pulser pulser;
 	Vec2 pos{ 0.f,0.f };
@@ -101,4 +111,5 @@ private:
 	Color c;
 	float speed = 2.f;
 	float radius_outer;
+	float angle = 0.f;
 };

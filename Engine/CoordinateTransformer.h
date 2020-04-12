@@ -23,6 +23,7 @@ public:
 	//}
 	void Draw(Drawable& drawable) const
 	{
+		
 		drawable.ScaleIndependent(1.f, -1.f);
 		drawable.Translate(offset);
 		drawable.Render(gfx);

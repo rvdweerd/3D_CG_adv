@@ -106,10 +106,16 @@ public:
 		}
 		DrawLine(vert.back(), vert.front(), c);
 	}
-	void DrawClosedPolyline(const std::vector<Vec2>& verts, Vec2 translation, float scale_X, float scale_Y,  Color c) 
+	void DrawClosedPolyline(const std::vector<Vec2>& verts, Vec2 translation, float scale_X, float scale_Y, float angle, Color c) 
 	{
+		const float sin_ = sin(angle); const float cos_ = cos(angle);
 		const auto Transform = [&](Vec2 v) -> Vec2 
 		{ 
+			//v.Rotate(angle);
+			const float x_new = cos_ * v.x - sin_ * v.y;
+			v.y = sin_ * v.x + cos_ * v.y;
+			v.x = x_new;
+
 			v.x *= scale_X;
 			v.y *= scale_Y;
 			v += translation;

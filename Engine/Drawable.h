@@ -29,13 +29,19 @@ public:
 	{
 		translation += offset;
 	}
+	void Rotate(float angle_in)
+	{
+		angle += angle_in;
+		translation.Rotate(angle_in);
+	}
 	void Render(Graphics& gfx) const
 	{
-		gfx.DrawClosedPolyline(*model, translation, scale_X, scale_Y,c);
+		gfx.DrawClosedPolyline(*model, translation, scale_X, scale_Y,angle,c);
 	}
 
 private:
 	const std::vector<Vec2>* model;
+	float angle = 0.f;
 	Color c;
 	Vec2 translation = { 0.f,0.f };
 	float scale_X = 1.f;

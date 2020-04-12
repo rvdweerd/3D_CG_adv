@@ -30,6 +30,7 @@
 #include <random>
 #include "StarBro.h"
 #include "MouseCameraController.h"
+#include "ChiliMath.h"
 
 class Game
 {
@@ -66,6 +67,8 @@ private:
     static constexpr float devFlares = 2.0f;
     static constexpr int minFlares = 3;
     static constexpr int maxFlares = 10;
+    static constexpr float minRotSpeed = -2.0f * PI;
+    static constexpr float maxRotSpeed = 2.0f * PI;
 
     // Game objects
     FrameTimer ft;

@@ -45,6 +45,7 @@ Game::Game( MainWindow& wnd )
     std::uniform_int_distribution<size_t> colorSampler(0, std::end(colors)-std::begin(colors));
     std::uniform_real_distribution<float> period(0.5f, 2.f);
     std::uniform_real_distribution<float> amp(1.0f, 1.5f);
+    std::uniform_real_distribution<float> rot(minRotSpeed, maxRotSpeed);
 
     while (stars.size() < nStars)
     {
@@ -58,7 +59,7 @@ Game::Game( MainWindow& wnd )
         const int nF = std::clamp((int)flareDist(rng), minFlares, maxFlares);
         const int& nFlares = std::clamp((int)flareDist(rng),minFlares,maxFlares);
         Color c = colors[colorSampler(rng)];
-        stars.emplace_back(pos, rad, innerRat, nFlares, c,period(rng),amp(rng));
+        stars.emplace_back(pos, rad, innerRat, nFlares, c,period(rng),amp(rng),rot(rng));
     }
 }
 
@@ -160,6 +161,7 @@ void Game::ComposeFrame()
     float dt = ft.Mark();
     for (Entity& e : stars)
     {
+        e.Update(dt);
         //cam.DrawClosedPolyline(e.GetPolyLine(), Colors::Red);
         cam.Draw(e.GetDrawable(dt));
 
