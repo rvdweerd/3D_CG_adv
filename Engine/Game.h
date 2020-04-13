@@ -31,6 +31,7 @@
 #include "StarBro.h"
 #include "MouseCameraController.h"
 #include "ChiliMath.h"
+#include "Mat2.h"
 
 class Game
 {

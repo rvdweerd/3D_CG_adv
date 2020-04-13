@@ -149,21 +149,26 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
-    //Vec2 v1{ 100,100 };
-    //gfx.DrawLine(v1, Vec2{ (float)wnd.mouse.GetPosX(), (float)wnd.mouse.GetPosY() }, Colors::White);
-    //std::vector<Vec2> vertices = Star::Make(175, 75, 7);
-    //for (auto& v : vertices)
-    //{
-    //    v += {200, 200};
-    //}
-    float dt = ft.Mark();
+    /*float dt = ft.Mark();
     for (Entity& e : stars)
     {
         e.Update(dt);
-        //cam.DrawClosedPolyline(e.GetPolyLine(), Colors::Red);
         cam.Draw(e.GetDrawable(dt));
 
+    }*/
+    
+    auto star = Star::Make(100.0f, 50.0f);
+    const auto sca = Mat2::Scale(15.f);
+    const auto rot = Mat2::Rotate(-0.2f);
+    const auto flp = Mat2::FlipYAxis();
+    const auto combinedT = flp * rot * sca;
+    for (auto& v : star)
+    {
+        v =  combinedT* v;
+        /*v = sca * v;
+        v = rot * v;
+        v = flp * v;*/
     }
-    //gfx.DrawClosedPolyline(vertices, Colors::Red);
+    cam.Draw(Drawable(star, Colors::Green));
     
 }
