@@ -64,5 +64,5 @@ private:
 	Vec2 pos = { 0,0 };
 	float camSpeed = 13.f;
 	float angle = 0.f;
-	float scale = 0.15f;
+	float scale = 1.0f;
 };

@@ -158,13 +158,16 @@ void Game::ComposeFrame()
     }*/
     
     auto star = Star::Make(100.0f, 50.0f);
-    const auto sca = Mat2::Scale(15.f);
-    const auto rot = Mat2::Rotate(-0.2f);
-    const auto flp = Mat2::FlipYAxis();
-    const auto combinedT = flp * rot * sca;
+    const auto Trot =   Mat3::Rotate(-0.29f);
+    const auto Tsca =   Mat3::Scale(1.5f);
+    const auto Tflp =   Mat3::FlipYAxis();
+    const auto Ttrans = Mat3::Translate(100.0f,-100.0f);
+    const auto combinedT = Ttrans * Tflp * Tsca * Trot;
     for (auto& v : star)
     {
-        v =  combinedT* v;
+        Vec3 v3 = (Vec3)v;
+        v =  Vec2(combinedT * v3);
+        int k = 0;
         /*v = sca * v;
         v = rot * v;
         v = flp * v;*/
