@@ -12,38 +12,17 @@ public:
 		c(c)
 	{
 	}
-	void Scale(float s)
+	void ApplyTransformation(const Mat3& transformation_in)
 	{
-		scale_X *= s;
-		scale_Y *= s;
-		translation *= s;
-	}
-	void ScaleIndependent(float s_X, float s_Y)
-	{
-		scale_X *= s_X;
-		scale_Y *= s_Y;
-		translation.x *= s_X;
-		translation.y *= s_Y;
-	}
-	void Translate(Vec2 offset)
-	{
-		translation += offset;
-	}
-	void Rotate(float angle_in)
-	{
-		angle += angle_in;
-		translation.Rotate(angle_in);
+		transformation = transformation_in * transformation;
 	}
 	void Render(Graphics& gfx) const
 	{
-		gfx.DrawClosedPolyline(*model, translation, scale_X, scale_Y,angle,c);
+		gfx.DrawClosedPolyline(*model, transformation , c );
 	}
 
 private:
 	const std::vector<Vec2>* model;
-	float angle = 0.f;
+	Mat3 transformation = Mat3::Identity();
 	Color c;
-	Vec2 translation = { 0.f,0.f };
-	float scale_X = 1.f;
-	float scale_Y = 1.f;
 };

@@ -28,6 +28,7 @@
 #include <vector>
 #include <iterator>
 #include <algorithm>
+#include "Mat3.h"
 
 class Graphics
 {
@@ -106,29 +107,32 @@ public:
 		}
 		DrawLine(vert.back(), vert.front(), c);
 	}
-	void DrawClosedPolyline(const std::vector<Vec2>& verts, Vec2 translation, float scale_X, float scale_Y, float angle, Color c) 
+	void DrawClosedPolyline(const std::vector<Vec2>& verts, const Mat3& Tcombined, Color c)
 	{
-		const float sin_ = sin(angle); const float cos_ = cos(angle);
-		const auto Transform = [&](Vec2 v) -> Vec2 
-		{ 
-			//v.Rotate(angle);
-			const float x_new = cos_ * v.x - sin_ * v.y;
-			v.y = sin_ * v.x + cos_ * v.y;
-			v.x = x_new;
+	// OLD VERSION (No matrix mult)
+	//void DrawClosedPolyline(const std::vector<Vec2>& verts, Vec2 translation, float scale_X, float scale_Y, float angle, Color c) 
+	//{
+	//	const float sin_ = sin(angle); const float cos_ = cos(angle);
+	//	const auto Transform = [&](Vec2 v) -> Vec2 
+	//	{ 
+	//		//v.Rotate(angle);
+	//		const float x_new = cos_ * v.x - sin_ * v.y;
+	//		v.y = sin_ * v.x + cos_ * v.y;
+	//		v.x = x_new;
 
-			v.x *= scale_X;
-			v.y *= scale_Y;
-			v += translation;
-			return v;
-		};
+	//		v.x *= scale_X;
+	//		v.y *= scale_Y;
+	//		v += translation;
+	//		return v;
+	//	};
 
-		if (std::any_of(verts.begin(), verts.end(), [&Transform](const Vec2& v) { return Graphics::OnScreen( Transform(v) );}))
+		if (std::any_of(verts.begin(), verts.end(), [&Tcombined](const Vec2& v) { return Graphics::OnScreen( Tcombined *(v) );}))
 		{
-			const Vec2 front = Transform(verts.front());
+			const Vec2 front = Tcombined * verts.front();
 			Vec2 cur = front;
 			for (auto it = verts.begin(); it != std::prev(verts.end()); ++it)
 			{
-				const Vec2 next = Transform(*std::next(it));
+				const Vec2 next = Tcombined * (*std::next(it));
 				DrawLine(cur, next, c);
 				cur = next;
 			}

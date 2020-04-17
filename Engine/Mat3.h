@@ -5,6 +5,11 @@ template <typename T>
 class _Mat3
 {
 public:
+	_Vec2<T> operator*(const _Vec2<T>& rhs) const
+	{
+		return _Vec2<T>(*this * _Vec3<T>(rhs));
+	}
+	
 	_Vec3<T> operator*(const _Vec3<T>& rhs) const
 	{
 		_Vec3<T> vec_out;
@@ -40,15 +45,19 @@ public:
 		}
 		return A_out;
 	}
-	_Mat3& operator*=(const _Mat3& rhs)
-	{
-		return *this = (*this)* rhs;
-	}
 	static _Mat3<T> Scale(T factor)
 	{
 		return _Mat3<T>{
 			factor,	(T)0,	(T)0,
 			(T)0,	factor,	(T)0,
+			(T)0,	(T)0,	(T)1
+		};
+	}
+	static _Mat3<T> ScaleXY(T factorX, T factorY)
+	{
+		return _Mat3<T>{
+			factorX,(T)0,	(T)0,
+			(T)0,	factorY,(T)0,
 			(T)0,	(T)0,	(T)1
 		};
 	}

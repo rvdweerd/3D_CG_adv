@@ -149,29 +149,11 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
-    /*float dt = ft.Mark();
+    float dt = ft.Mark();
     for (Entity& e : stars)
     {
         e.Update(dt);
         cam.Draw(e.GetDrawable(dt));
 
-    }*/
-    
-    auto star = Star::Make(100.0f, 50.0f);
-    const auto Trot =   Mat3::Rotate(-0.29f);
-    const auto Tsca =   Mat3::Scale(1.5f);
-    const auto Tflp =   Mat3::FlipYAxis();
-    const auto Ttrans = Mat3::Translate(100.0f,-100.0f);
-    const auto combinedT = Ttrans * Tflp * Tsca * Trot;
-    for (auto& v : star)
-    {
-        Vec3 v3 = (Vec3)v;
-        v =  Vec2(combinedT * v3);
-        int k = 0;
-        /*v = sca * v;
-        v = rot * v;
-        v = flp * v;*/
     }
-    cam.Draw(Drawable(star, Colors::Green));
-    
 }

@@ -2,7 +2,7 @@
 #include <vector>
 #include "Vec2.h"
 #include "Drawable.h"
-
+#include "Mat3.h"
 
 class Entity
 {
@@ -97,9 +97,11 @@ public:
 	Drawable GetDrawable(float dt) 
 	{
 		Drawable d(verts, c);
-		d.Scale( pulser.GetScale(dt) * scaler );
-		d.Rotate(angle);
-		d.Translate(pos);
+		d.ApplyTransformation( 
+			Mat3::Translate(pos.x,pos.y) *
+			Mat3::Scale(pulser.GetScale(dt)*scaler) *
+			Mat3::Rotate(angle) 
+		);
 		return d;
 	}
 	virtual void Update(float dt) = 0;

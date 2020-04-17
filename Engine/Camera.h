@@ -21,22 +21,13 @@ public:
 	{
 		pos += offset;// *camSpeed;
 	}
-	//void DrawClosedPolyline(std::vector<Vec2> verts, Color c)
-	//{
-	//	for (Vec2& v : verts)
-	//	{
-	//		v -= pos;
-	//		v *= scale;
-	//	}
-	//	ct.DrawClosedPolyline(std::move(verts),c);
-	//}
 	void Draw(Drawable& drawable) const
 	{
-
-		drawable.Translate(-pos);
-		
-		drawable.Scale(scale);
-		drawable.Rotate(angle);
+		drawable.ApplyTransformation(
+			Mat3::Rotate(angle) * 
+			Mat3::Scale(scale) *
+			Mat3::Translate(-pos.x, -pos.y) 
+		);
 		ct.Draw( drawable );
 	}
 	void Scale(float scaler)
